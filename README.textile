@@ -1,0 +1,33 @@
+h1. EMP
+
+**EMP** = **E**vent **M**achine + X**MP**P
+
+h2. About
+
+**Warning! This is a proof of concept hack.  It needs to be rewritten at least 2 or 3 more times.**
+
+xmpp4r sucks, it's the equivalent of CGI scripts for the internets.  The "thing to do" with xmpp4r is to write bots.  Why?  Because bots are like simple little CGI scripts.  Trying to write anything complex on top of xmpp4r will cause much pain and suffering, hair pulling, and resentment towards XMPP.  What we need is a framework that makes working with XMPP as enjoyable as Rails made HTTP.
+
+Turns out merb could be a great meta-framework: a framework for writing other frameworks.  It's got great support for setting up a damon process, defining a boot sequence, logging, routing, generating/templates, and more.  EMP has been poaching stuff from merb and follows the same basic layout.
+
+h2. How It Works
+
+EMP uses Event Machine to connect to an XMPP server.  In the equivalent of the merb's init file, you specify the node, host, authentication method, and password or shared key.  In the equivalent to merb's router file, you specify the resources your app 'serves', along with the code to define routes from raw stanzas to the components & actions (equivalent to merb's controllers & actions), which would probably defined in app/components/.  A separate event machine connection is established per resource (which corresponds to a JID).
+
+The boot sequence should mirror merb's boot sequence.  The difference being instead of the "rack up" step, the event machine connections are setup, and the xmpp chatter to establish authentication, resource binding, and an initial presence are additional steps.  Once the bootup sequence is done, your left with a damon waiting on XMPP requests.
+
+When EM receives data (e.g. an XMPP request), it passes it off to a libxml SAX parser.  The SAX parser builds the XMPP Nodes, and as soon as enough of information is received to handle a request, it's passed off to the Dispatcher.  The Dispatcher builds XPath queries based on the route table.  If it finds a match, it passes the XMPP payload to Component and dispatches the action.  Same as merb, but with XML stanzas instead of http requests.  Also, this should happen inside an EventMachine.defer call to protect against actions that block.  The response from the action is passed back to the EM handler and sent out on the wire.
+
+h2. TODO
+
+* Figure out why it's stalling after authentication.
+* Tie in PubSub somehow.
+* Use the XEP-0114: Jabber Component Protocol by default (http://xmpp.org/extensions/xep-0114.html).
+* Rework the boot sequence to handle "encryption, authentication, and resource binding", as well as the presence stuff.
+* Add a router based on XPath.
+* Handle dispatches to the Components using the EventMachine.defer method.
+* Burn all this code and start over again.
+
+h3. Examples
+
+There are two examples under the emp-examples dir: hack/hack.rb and tweeter/tweeter.rb.  "Hack" is the most basic EMP example, and doesn't work.  Neither does "Tweeter", but this example shows how an API could be implemented with EMP.
