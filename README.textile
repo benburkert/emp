@@ -8,7 +8,7 @@ h2. About
 
 xmpp4r sucks, it's the equivalent of CGI scripts for the internets.  The "thing to do" with xmpp4r is to write bots.  Why?  Because bots are like simple little CGI scripts.  Trying to write anything complex on top of xmpp4r will cause much pain and suffering, hair pulling, and resentment towards XMPP.  What we need is a framework that makes working with XMPP as enjoyable as Rails made HTTP.
 
-Turns out merb could be a great meta-framework: a framework for writing other frameworks.  It's got great support for setting up a damon process, defining a boot sequence, logging, routing, generating/templates, and more.  EMP has been poaching stuff from merb and follows the same basic layout.
+Turns out merb could be a great meta-framework: a framework for writing other frameworks.  It's got great support for setting up a daemon process, defining a boot sequence, logging, routing, generating/templates, and more.  EMP has been poaching stuff from merb and follows the same basic layout.
 
 h2. How It Works
 
